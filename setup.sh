@@ -32,7 +32,7 @@ install () {
     clear
 
     if [[ -z "${localized_installers[@]}" ]]; then
-      echo -e "\n${Red}${Bold}Packet Tracer installer not found in /home. It must be named like this: $installer_name_1.$Color_Off\n"
+      echo -e "\n${Red}${Bold}Packet Tracer installer not found in /home. It must be named like ${Color_Off}\"Cisco*Packet*.deb\" ${Red}${Bold}or ${Color_Off}\"Packet*Tracer*.deb\" \n"
       echo -e "You can download the installer from ${Cyan}https://www.netacad.com/portal/resources/packet-tracer${Color_Off} \
     or ${Cyan}https://skillsforall.com/resources/lab-downloads${Color_Off} (login required)."
       exit 1
