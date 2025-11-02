@@ -16,45 +16,25 @@ Install Cisco Packet Tracer latest version on Fedora Linux using
  -h, --help              Show this help message and exit
  --uninstall             Uninstall Cisco Packet Tracer
 "
+install_pt9 () {
+  echo "Extracting files"
+  mkdir packettracer
+  ar -x $selected_installer --output=packettracer
+  tar -xvf packettracer/control.tar.xz --directory=packettracer
+  tar -xvf packettracer/data.tar.xz --directory=packettracer 
+  sudo cp -r packettracer/opt /
+  ! test -d /usr/local/bin && sudo mkdir /usr/local/bin
+  sudo ln -sf /opt/pt/packettracer.AppImage /usr/local/bin/packettracer
+  /usr/local/bin/packettracer --pt-activate
+  sudo ./packettracer/postinst
+  sudo xdg-desktop-menu uninstall /usr/share/applications/cisco-pt*.desktop
+  sudo update-mime-database /usr/share/mime
+  sudo gtk-update-icon-cache -t --force /usr/share/icons/gnome
+  sudo rm -rf packettracer
+  exit
+}
 
-install () {
-    # Find Cisco Packet Tracer installer
-    localized_installers=()
-    selected_installer=''
-
-    echo -e "${Green}${Bold}Searching for installers in user home...${Color_Off}\n"
-    c=1
-    for installer in $(find $installer_search_path -type f -name "Cisco*Packet*.deb" -o -name "Packet*Tracer*.deb"); do
-      localized_installers[$c]=$installer
-      ((c++))
-    done
-
-    clear
-
-    if [[ -z "${localized_installers[@]}" ]]; then
-      echo -e "\n${Red}${Bold}Packet Tracer installer not found in /home. It must be named like this: $installer_name_1.$Color_Off\n"
-      echo -e "You can download the installer from ${Cyan}https://www.netacad.com/portal/resources/packet-tracer${Color_Off} \
-    or ${Cyan}https://skillsforall.com/resources/lab-downloads${Color_Off} (login required)."
-      exit 1
-    elif [ "${#localized_installers[@]}" -eq 1 ]; then
-      selected_installer="${localized_installers[1]}"
-    else
-
-      echo -e "${Red}${Bold}Press CTRL + C to cancel installation.${Color_Off}\n"
-      echo -e "${Cyan}${Bold}$((c-1)) installers of Cisco Packet Tracer was founded:${Color_Off}\n"
-
-      PS3="Select a installer to use: "
-
-      select installer in ${localized_installers[@]}
-      do
-        selected_installer=$installer
-        break
-      done
-    fi
-
-    echo -e "\n${Bold}Selected installer: ${Red}${Bold}$selected_installer ${Color_Off}\n"
-    sleep 3
-
+install_old_pt () {
     echo "Removing old version of Packet Tracer from /opt/pt"
     uninstall
 
@@ -92,6 +72,53 @@ uninstall () {
     sleep 3
 }
 
+locate_installers () {
+  # Find Cisco Packet Tracer installer
+  localized_installers=()
+  selected_installer=''
+
+  echo -e "${Green}${Bold}Searching for installers in user home...${Color_Off}\n"
+  c=1
+  for installer in $(find $installer_search_path -type f -name "Cisco*Packet*.deb" -o -name "Packet*Tracer*.deb" -o -name "CiscoPacketTracer_900_Ubuntu_64bit.deb"); do
+    localized_installers[$c]=$installer
+    ((c++))
+  done
+
+  clear
+
+  if [[ -z "${localized_installers[@]}" ]]; then
+    echo -e "\n${Red}${Bold}Packet Tracer installer not found in /home. It must be named like this: $installer_name_1.$Color_Off\n"
+    echo -e "You can download the installer from ${Cyan}https://www.netacad.com/portal/resources/packet-tracer${Color_Off} \
+  or ${Cyan}https://skillsforall.com/resources/lab-downloads${Color_Off} (login required)."
+    exit 1
+  elif [ "${#localized_installers[@]}" -eq 1 ]; then
+    selected_installer="${localized_installers[1]}"
+  else
+
+    echo -e "${Red}${Bold}Press CTRL + C to cancel installation.${Color_Off}\n"
+    echo -e "${Cyan}${Bold}$((c-1)) installers of Cisco Packet Tracer was founded:${Color_Off}\n"
+
+    PS3="Select a installer to use: "
+
+    select installer in ${localized_installers[@]}
+    do
+      selected_installer=$installer
+      break
+    done
+  fi
+
+  echo -e "\n${Bold}Selected installer: ${Red}${Bold}$selected_installer ${Color_Off}\n"
+
+  sleep 3
+  if [[ $selected_installer =~ 9 ]]; then
+    echo "Removing old version of Packet Tracer from /opt/pt"
+    uninstall
+    install_pt9
+  else
+    install_old_pt
+  fi
+}
+
 case "$1" in
     -h | --help)
         echo "$USAGE_MESSAGE"
@@ -102,7 +129,7 @@ case "$1" in
         installer_search_path="$2"
         echo -e "A directory was especified for search the installer: ${Bold}$installer_search_path${Color_Off}"
         sleep 3
-        install
+        locate_installers
     ;;
 
     --uninstall)
@@ -112,5 +139,5 @@ case "$1" in
 esac
 
 if [ "$1" = "" ]
-then install
+then locate_installers
 fi
