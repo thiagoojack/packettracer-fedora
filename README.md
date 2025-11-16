@@ -24,6 +24,16 @@ Now, the script accepts these command line options:
 - [x] Fedora 41
 - [x] Fedora 42
 
+## Fedora 43+
+
+Packet Tracer 9 requires `libfuse.so.2` (FUSE2), which is not included by default in Fedora 43.  
+Before installing, run:
+
+```
+sudo dnf install fuse fuse-libs
+```
+
+
 > [!Note]
 > If you are using a distribution that is based on Fedora, this script will probably still work. If not, open an issue. I will not list any Fedora based distro here.
 
