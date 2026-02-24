@@ -17,6 +17,7 @@ Install Cisco Packet Tracer latest version on Fedora Linux using
  --uninstall             Uninstall Cisco Packet Tracer
 "
 install_pt9 () {
+  sudo dnf install fuse fuse-libs
   echo "Extracting files"
   mkdir packettracer
   ar -x $selected_installer --output=packettracer
