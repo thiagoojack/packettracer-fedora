@@ -88,7 +88,9 @@ locate_installers () {
   clear
 
   if [[ -z "${localized_installers[@]}" ]]; then
-    echo -e "\n${Red}${Bold}Packet Tracer installer not found in /home. It must be named like this: $installer_name_1.$Color_Off\n"
+    echo -e "\n${Red}${Bold}Packet Tracer installer not found in ${installer_search_path}."
+    echo -e "Expected filename pattern: ${Bold}CiscoPacketTracer_<version>_Ubuntu_64bit.deb"
+    echo -e "For example: ${Bold}CiscoPacketTracer_900_Ubuntu_64bit.deb${Color_Off}\n"
     echo -e "You can download the installer from ${Cyan}https://www.netacad.com/portal/resources/packet-tracer${Color_Off} \
   or ${Cyan}https://skillsforall.com/resources/lab-downloads${Color_Off} (login required)."
     exit 1
