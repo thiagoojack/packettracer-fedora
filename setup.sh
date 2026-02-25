@@ -30,7 +30,7 @@ install_pt9 () {
   sudo ./packettracer/postinst
   sudo xdg-desktop-menu uninstall /usr/share/applications/cisco-pt*.desktop
   sudo update-mime-database /usr/share/mime
-  sudo gtk-update-icon-cache -t --force /usr/share/icons/gnome
+  sudo gtk-update-icon-cache -t --force /usr/share/icons
   sudo rm -rf packettracer
   exit
 }
@@ -65,7 +65,7 @@ uninstall () {
       sudo rm -rf /opt/pt /usr/share/applications/cisco*-pt*.desktop
       sudo xdg-desktop-menu uninstall /usr/share/applications/cisco-pt*.desktop
       sudo update-mime-database /usr/share/mime
-      sudo gtk-update-icon-cache -t --force /usr/share/icons/gnome
+      sudo gtk-update-icon-cache -t --force /usr/share/icons
 
       sudo rm -f /usr/local/bin/packettracer
     fi
