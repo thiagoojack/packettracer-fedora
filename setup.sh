@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -euo pipefail
 Red="\033[0;31m"
 Bold="\033[1m"
 Color_Off="\033[0m"
@@ -16,9 +17,10 @@ Install Cisco Packet Tracer latest version on Fedora Linux using
  -h, --help              Show this help message and exit
  --uninstall             Uninstall Cisco Packet Tracer
 "
-install_pt9 () {
-  sudo dnf install fuse fuse-libs
+install () {
   echo "Extracting files"
+  echo "Installing dependencies"
+  sudo dnf -y install binutils fuse fuse-libs
   mkdir packettracer
   ar -x $selected_installer --output=packettracer
   tar -xvf packettracer/control.tar.xz --directory=packettracer
@@ -33,30 +35,6 @@ install_pt9 () {
   sudo gtk-update-icon-cache -t --force /usr/share/icons
   sudo rm -rf packettracer
   exit
-}
-
-install_old_pt () {
-    echo "Removing old version of Packet Tracer from /opt/pt"
-    uninstall
-
-    echo "Installing dependencies"
-    sudo dnf -y install binutils qt5-qt{multimedia,webengine,networkauth,websockets,webchannel,script,location,svg,speech}
-
-    echo "Extracting files"
-    mkdir packettracer
-    ar -x $selected_installer --output=packettracer
-    tar -xvf packettracer/control.tar.xz --directory=packettracer
-    tar -xvf packettracer/data.tar.xz --directory=packettracer
-
-    sudo cp -r packettracer/usr /
-    sudo cp -r packettracer/opt /
-    sudo sed -i 's/sudo xdg-mime/sudo -u $SUDO_USER xdg-mime/' ./packettracer/postinst
-    sudo sed -i 's/sudo gtk-update-icon-cache --force/sudo gtk-update-icon-cache -t --force/' ./packettracer/postinst
-    sudo sed -i 's/CONTENTS="$CONTENTS\\n$line"/CONTENTS="$CONTENTS\
-    $line"/' ./packettracer/postinst
-    sudo ./packettracer/postinst
-    sudo sed -i 's/packettracer/packettracer --no-sandbox args/' /usr/share/applications/cisco-pt*.desktop
-    sudo rm -rf packettracer
 }
 
 uninstall () {
@@ -113,16 +91,12 @@ locate_installers () {
   echo -e "\n${Bold}Selected installer: ${Red}${Bold}$selected_installer ${Color_Off}\n"
 
   sleep 3
-  if [[ $selected_installer =~ 9 ]]; then
-    echo "Removing old version of Packet Tracer from /opt/pt"
-    uninstall
-    install_pt9
-  else
-    install_old_pt
-  fi
+  echo "Removing old version of Packet Tracer from /opt/pt"
+  uninstall
+  install
 }
 
-case "$1" in
+case "${1:-}" in
     -h | --help)
         echo "$USAGE_MESSAGE"
         exit 0
@@ -141,6 +115,6 @@ case "$1" in
 
 esac
 
-if [ "$1" = "" ]
+if [ "${1:-}" = "" ]
 then locate_installers
 fi
