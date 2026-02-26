@@ -21,6 +21,7 @@ install () {
   echo "Extracting files"
   echo "Installing dependencies"
   sudo dnf -y install binutils fuse fuse-libs
+  ! test -d /home/$user_name/.local/share/applications && sudo mkdir /home/$user_name/.local/share/applications
   mkdir packettracer
   ar -x $selected_installer --output=packettracer
   tar -xvf packettracer/control.tar.xz --directory=packettracer
@@ -40,6 +41,7 @@ install () {
 uninstall () {
     if [ -e /opt/pt ]; then
       echo "Uninstalling Cisco Packet Tracer."
+      /usr/local/bin/packettracer --pt-deactivate
       sudo rm -rf /opt/pt /usr/local/share/applications/CiscoPacketTracer*.desktop /home/$user_name/.local/share/applications/CiscoPacketTracer*.desktop /home/$user_name/.local/share/mime/packages/cisco-pk*.xml
       sudo xdg-desktop-menu uninstall /usr/share/applications/cisco-pt*.desktop
       sudo update-mime-database /usr/share/mime
