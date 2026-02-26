@@ -20,7 +20,7 @@ Install Cisco Packet Tracer latest version on Fedora Linux using
 install () {
   echo "Extracting files"
   echo "Installing dependencies"
-  sudo dnf -y install binutils fuse fuse-libs
+  sudo dnf -y install binutils fuse fuse-libs qt5-qttools
   ! test -d /home/$user_name/.local/share/applications && sudo mkdir /home/$user_name/.local/share/applications
   mkdir packettracer
   ar -x $selected_installer --output=packettracer
