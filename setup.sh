@@ -40,7 +40,10 @@ install () {
 uninstall () {
     if [ -e /opt/pt ]; then
       echo "Uninstalling Cisco Packet Tracer."
-      sudo rm -rf /opt/pt /usr/local/share/applications/CiscoPacketTracer*.desktop /home/$user_name/.local/share/mime/packages/cisco-pk*.xml
+      sudo rm -rf /opt/pt \
+        /usr/local/share/applications/CiscoPacketTracer*.desktop \
+        /home/$user_name/.local/share/applications/CiscoPacketTracer*.desktop \
+        /home/$user_name/.local/share/mime/packages/cisco-pk*.xml
       sudo xdg-desktop-menu uninstall /usr/share/applications/cisco-pt*.desktop
       sudo update-mime-database /usr/share/mime
       sudo gtk-update-icon-cache -t --force /usr/share/icons
