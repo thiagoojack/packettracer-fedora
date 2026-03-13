@@ -6,7 +6,7 @@ Bold="\033[1m"
 Color_Off="\033[0m"
 Cyan="\033[0;36m"
 Green="\033[0;32m"
-user_name=$(who | cut -d ' ' -f 1 | head -1)
+user_name=$(logname 2>/dev/null || echo "${SUDO_USER:-$USER}")
 installer_search_path="/home/$user_name"
 USAGE_MESSAGE="Usage: $0 [OPTIONS]... [DIRECTORY]...
 Install Cisco Packet Tracer latest version on Fedora Linux using
@@ -21,7 +21,7 @@ install () {
   echo "Extracting files"
   echo "Installing dependencies"
   sudo dnf -y install binutils fuse fuse-libs qt5-qttools
-  ! test -d /home/$user_name/.local/share/applications && sudo mkdir /home/$user_name/.local/share/applications
+  ! test -d /home/$user_name/.local/share/applications && sudo mkdir -p /home/$user_name/.local/share/applications
   mkdir packettracer
   ar -x $selected_installer --output=packettracer
   tar -xvf packettracer/control.tar.xz --directory=packettracer
