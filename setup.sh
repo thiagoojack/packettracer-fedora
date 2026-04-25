@@ -6,7 +6,7 @@ Bold="\033[1m"
 Color_Off="\033[0m"
 Cyan="\033[0;36m"
 Green="\033[0;32m"
-user_name=$(who | cut -d ' ' -f 1 | head -1)
+user_name="${SUDO_USER:-$(who | cut -d ' ' -f 1 | head -1)}"
 installer_search_path="/home/$user_name"
 USAGE_MESSAGE="Usage: $0 [OPTIONS]... [DIRECTORY]...
 Install Cisco Packet Tracer latest version on Fedora Linux using
